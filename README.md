@@ -6,7 +6,14 @@
 
 점자책을 직접 촬영하여 얻은 영상입니다. 책을 카메라로 찍었을때 대상이 평평하지않고 불균일 하기때문에 이러한 점을 고려하여 진행 하였습니다.
 
-## 2. 영상처리
+![10_hi](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/c7b5573b-ae7a-403f-9ec9-2395d5ddd73c)
+
+또한 실사용을 고려하여 회전된 이미지도 사용하였습니다.
+
+## 2. 영상 처리
+![점자 규격](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/77ab501a-2c68-4a74-9b58-35117cc69ff8)
+
+점자는 일정한 규격을 가지므로 일정하게 정렬시켜 주어야 합니다.
 
 ### 2.1 특징점 검출
 
@@ -49,4 +56,138 @@ drawKeypoints() 를 사용하여 검출한 keypoint들을 시각화 하였습니
 
 ![책 BLOB](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/6c59d503-264f-45b9-a6e5-bef59893366b)
 
+### 2.2 특징점 리스트화
 
+```
+    contours,_=cv2.findContours(img2, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
+
+    for i, cnt in enumerate(contours):
+
+        x,y,width_fst,height_fst = cv2.boundingRect(cnt)
+
+        list1_1[i]=i,x+40,y+20
+```
+
+2.1 에서 검출한 blob로 원을 그려 새롭게 나타낸 이미지에서 cv2.findContours()을 사용하여 원의 특징점을 저장하고
+
+cv2.boundingRect() 함수를 사용하여 원의 시작 좌표들을 추출하여 리스트에 저장하였습니다.
+
+```
+    for i in range(len(list1_1)):
+        x = list1_1[i][1]
+        y = list1_1[i][2]
+        img2_2[y, x] = 255
+```
+
+list1_1 (리스트)에 저장한 점자들의 좌표로 새로운 이미지(img2_2)에 나타내었습니다.
+
+![img2_2](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/e2ce3c98-b613-4491-8fb6-3089587d76cf)
+
+이때 이미지를 임의로 회전시켜서 회전된 이미지에 대한 보정도 진행 하였습니다.
+
+### 2.3 이미지 회전보정
+
+```
+    lines_z = cv2.HoughLines(img2_2, rho_z, theta_z, 10)
+    img3_2_4,_,angle = draw_houghLines_1(img3_2_4, lines_z, 0, 3.14)
+    average = sum(angle) / len(angle)
+
+
+```
+![img3_2_4](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/6104a72e-c74a-4588-b4c6-a8000da347b1)
+
+img2_2를  cv2.HoughLines()의 허프변환 함수를 사용하여 일정 thres 개수를 넘어가는 line들을 저장해주고 이들의 평균 각도를 구하였습니다.
+
+```
+hei_1, wid_1 = img3_2_4.shape[:2]
+rotation_center = (wid_1 // 2, hei_1 // 2)
+rotation_angle = math.degrees(average)
+
+# 회전 매트릭스 계산
+rotation_matrix = cv2.getRotationMatrix2D(rotation_center, -(90-rotation_angle), 1.0)
+
+# 이미지 회전
+img3_2_3 = cv2.warpAffine(img3_2_3, rotation_matrix, (wid_1, hei_1))
+```
+회전된 평균 각도를 이용하여 cv2.getRotationMatrix2D() 함수로 회전 매트릭스를 구하고  cv2.warpAffine() 매스릭스를 이용한 어파인 변환으로 이미지를 회전시켜주었습니다.
+
+![img3_2_3](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/b329ffc1-f4ea-4ef3-b6f3-2100d57df6dd)
+
+img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌표를 저장했습니다.
+
+### 2.4 불균인한 영상 보정 
+
+점자는 일정한 규격과 규칙을 가지고 있기 떄문에 일정한 규격으로 만들어주어야합니다.
+```
+    for i in range(len(list1)):
+        for j in range(i + 1, len(list1)):
+            x1,y1 = list1[i][1:]
+            x2,y2 = list1[j][1:]
+            x1, x2, y1, y2 = int(x1), int(x2), int(y1), int(y2)
+            if (x2 - x1) != 0:
+                angle_rad = (y2 - y1) / (x2 - x1)
+            else:
+                angle_rad = 0
+            angle_radians = math.atan(angle_rad)
+            angle_degrees = math.degrees(angle_radians)
+            angle_sum1 += angle_degrees
+
+            if abs(y2 - y1) >= 2and abs(y2 - y1) < 10 and abs(x2 - x1) <100:
+                if angle_degrees>0:
+                    cv2.line(img3_1, (x1, y1), (x2, y2), (0,  255,0), 1)
+                    if x2 >= x_max:
+                        x_max=x2
+                    if y2>=y_max:
+                        y_max=y2
+                    if y1<=y_min:
+                        y_min=y1
+                    if x1 <= x_min:
+                        x_min =x1
+```
+따라서 휘어짐 정도를 판단하고 어디가 왜곡이 심한지 확인하기위하여 일정 각도,길이 이내의 좌표들을 연결하였습니다.
+
+![img3_1](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/483b48de-9048-471c-a14e-c35e7b141441)
+
+
+책의 가운데 부분(영상의 왼쪽)은 두께로인한 휘어짐이 발생하므로 이부분에 대한 보정이 필요하였습니다.
+
+```
+img3_1_1 = img3_1[0:rows, 0:div3-1]
+img3_1_2 = img3_1[0:rows, div3:(div3 * 2)-1]
+img3_1_3 = img3_1[0:rows, div3 * 2:(div3 * 3)-1]
+```
+
+우선 왜곡이 심한부분을 여러개의 조각으로 나눠주었습니다.
+```
+    contours1,_ = cv2.findContours(img3_1_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    y_max3=0
+    y_cut_1=[]
+    y_cut_2=[]
+    for a in range(len((contours1))):
+        if  len(contours1[a])>1:
+            for b in range(len(contours1[a])):
+                if contours1[a][b][0][1]>y_max3:
+                    y_max3=contours1[a][b][0][1]
+            for b in range(len(contours1[a])):
+                contours1[a][b][0][1]=y_max3
+            y_cut_1.append(y_max3+1)
+            y_max3 = 0
+    y_cut_1=sorted(y_cut_1)
+    #print(y_cut_1)
+    a = 0
+    while a != len(y_cut_1):
+        if y_cut_1[a + 1] - y_cut_1[a] < 28:
+            a = a + 3
+        else:
+            y_cut_1.insert(a + 1, y_cut_1[a] + 15)
+            a = a + 3
+    for contour in contours1:
+        x, y, w, h = cv2.boundingRect(contour)
+        cv2.rectangle(img3_1_1, (x, y), (x + w, y + h), (0, 0, 255), 1)
+    for a in range(len(y_cut_1)-1):
+        if (y_cut_1[a+1]-y_cut_1[a])<12:
+            y_cut_1[a + 1]=y_cut_1[a]+13
+    for a in y_cut_1:
+        cv2.line(img3_1_1,(0,a),(img3_1_1.shape[1],a),(255,0,0),1)
+
+```
