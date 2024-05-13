@@ -1,4 +1,5 @@
-# Braille Translation Program for Beginners
+# Braille book recognition program
+
 시각 장애인들이 점자책을 이용하는데 여러 가지 불편함이 존재할 것 같아 점자책을 영상처리 기술을 사용하여 인식하고 이를 기반으로 음성파일로 변환 시켜주는 알고리즘을 개발하였습니다.
 
 ## 1. 영상 취득
@@ -119,7 +120,7 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
 
 이전 단계(2.3) 에서 얻은 img3_1은 이미지의 휘어짐과 왜곡이 존재하기 떄문에 일정 각도,길이 이내의 좌표들을 연결하보았습니다.
 
-![img3_1](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/483b48de-9048-471c-a14e-c35e7b141441)
+![img3_1_line](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/2b8cceea-9bb0-4a37-ad95-ef984e22f9e8)
 
 책의 가운데 부분(영상의 왼쪽)은 두께로인한 휘어짐이 발생하므로 이부분에 대한 보정이 필요하였고
 
@@ -136,7 +137,40 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
         img3_3_7 = img3_1[0:heigt_total, div6 * 6:div6 * 7]
 ```
 
-우선 이미지를 여러개의 조각으로 나눠주었고
-
+우선 이미지를 여러개의 조각으로 나눠주었고 첫번째 조각부터 차례대로 보정을 진행하였습니다.
 
 ```
+contours3_1, _ = cv2.findContours(img3_3_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+y_max3 = 0
+y_cut_1 = []
+for a in range(len((contours3_1))):
+    if len(contours3_1[a]) > 1:
+        for b in range(len(contours3_1[a])):
+            if contours3_1[a][b][0][1] > y_max3:
+                y_max3 = contours3_1[a][b][0][1]
+        for b in range(len(contours3_1[a])):
+            contours3_1[a][b][0][1] = y_max3
+        y_cut_1.append(y_max3 + 1)
+        y_max3 = 0
+y_cut_1 = sorted(y_cut_1)
+
+a = 0
+while a != len(y_cut_1):
+    if y_cut_1[a + 1] - y_cut_1[a] < 28:
+        a = a + 3
+    else:
+        y_cut_1.insert(a + 1, y_cut_1[a] + 15)
+        a = a + 3
+for contour in contours3_1:
+    x, y, w, h = cv2.boundingRect(contour)
+    cv2.rectangle(img3_3_1, (x, y), (x + w, y + h), (0, 0, 255), 1)
+for a in range(len(y_cut_1) - 1):
+    if (y_cut_1[a + 1] - y_cut_1[a]) < 12:
+        y_cut_1[a + 1] = y_cut_1[a] + 13
+for a in y_cut_1:
+    cv2.line(img3_3_1, (0, a), (img3_3_1.shape[1], a), (255, 0, 0), 1)
+
+```
+
+![img3_1_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/93a1bb58-eb0e-4dbe-84f8-24981482baac)
+
