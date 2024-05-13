@@ -117,77 +117,26 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
 
 ### 2.4 불균인한 영상 보정 
 
-점자는 일정한 규격과 규칙을 가지고 있기 떄문에 일정한 규격으로 만들어주어야합니다.
-```
-    for i in range(len(list1)):
-        for j in range(i + 1, len(list1)):
-            x1,y1 = list1[i][1:]
-            x2,y2 = list1[j][1:]
-            x1, x2, y1, y2 = int(x1), int(x2), int(y1), int(y2)
-            if (x2 - x1) != 0:
-                angle_rad = (y2 - y1) / (x2 - x1)
-            else:
-                angle_rad = 0
-            angle_radians = math.atan(angle_rad)
-            angle_degrees = math.degrees(angle_radians)
-            angle_sum1 += angle_degrees
-
-            if abs(y2 - y1) >= 2and abs(y2 - y1) < 10 and abs(x2 - x1) <100:
-                if angle_degrees>0:
-                    cv2.line(img3_1, (x1, y1), (x2, y2), (0,  255,0), 1)
-                    if x2 >= x_max:
-                        x_max=x2
-                    if y2>=y_max:
-                        y_max=y2
-                    if y1<=y_min:
-                        y_min=y1
-                    if x1 <= x_min:
-                        x_min =x1
-```
-따라서 휘어짐 정도를 판단하고 어디가 왜곡이 심한지 확인하기위하여 일정 각도,길이 이내의 좌표들을 연결하였습니다.
+이전 단계(2.3) 에서 얻은 img3_1은 이미지의 휘어짐과 왜곡이 존재하기 떄문에 일정 각도,길이 이내의 좌표들을 연결하보았습니다.
 
 ![img3_1](https://github.com/k99885/Braille-Translation-Program-for-Beginners/assets/157681578/483b48de-9048-471c-a14e-c35e7b141441)
 
+책의 가운데 부분(영상의 왼쪽)은 두께로인한 휘어짐이 발생하므로 이부분에 대한 보정이 필요하였고
 
-책의 가운데 부분(영상의 왼쪽)은 두께로인한 휘어짐이 발생하므로 이부분에 대한 보정이 필요하였습니다.
+또한 점자는 일정한 규격과 규칙을 가지고 있기 떄문에 전체적으로 일정한 규격으로 만들어주어야합니다.
+
 
 ```
-img3_1_1 = img3_1[0:rows, 0:div3-1]
-img3_1_2 = img3_1[0:rows, div3:(div3 * 2)-1]
-img3_1_3 = img3_1[0:rows, div3 * 2:(div3 * 3)-1]
+        img3_3_1 = img3_1[0:heigt_total, div6 * 0:div6 * 1]
+        img3_3_2 = img3_1[0:heigt_total, div6 * 1:div6 * 2]
+        img3_3_3 = img3_1[0:heigt_total, div6 * 2:div6 * 3]
+        img3_3_4 = img3_1[0:heigt_total, div6 * 3:div6 * 4]
+        img3_3_5 = img3_1[0:heigt_total, div6 * 4:div6 * 5]
+        img3_3_6 = img3_1[0:heigt_total, div6 * 5:div6 * 6]
+        img3_3_7 = img3_1[0:heigt_total, div6 * 6:div6 * 7]
 ```
 
-우선 왜곡이 심한부분을 여러개의 조각으로 나눠주었습니다.
-```
-    contours1,_ = cv2.findContours(img3_1_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    y_max3=0
-    y_cut_1=[]
-    y_cut_2=[]
-    for a in range(len((contours1))):
-        if  len(contours1[a])>1:
-            for b in range(len(contours1[a])):
-                if contours1[a][b][0][1]>y_max3:
-                    y_max3=contours1[a][b][0][1]
-            for b in range(len(contours1[a])):
-                contours1[a][b][0][1]=y_max3
-            y_cut_1.append(y_max3+1)
-            y_max3 = 0
-    y_cut_1=sorted(y_cut_1)
-    #print(y_cut_1)
-    a = 0
-    while a != len(y_cut_1):
-        if y_cut_1[a + 1] - y_cut_1[a] < 28:
-            a = a + 3
-        else:
-            y_cut_1.insert(a + 1, y_cut_1[a] + 15)
-            a = a + 3
-    for contour in contours1:
-        x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(img3_1_1, (x, y), (x + w, y + h), (0, 0, 255), 1)
-    for a in range(len(y_cut_1)-1):
-        if (y_cut_1[a+1]-y_cut_1[a])<12:
-            y_cut_1[a + 1]=y_cut_1[a]+13
-    for a in y_cut_1:
-        cv2.line(img3_1_1,(0,a),(img3_1_1.shape[1],a),(255,0,0),1)
+우선 이미지를 여러개의 조각으로 나눠주었고
+
 
 ```
