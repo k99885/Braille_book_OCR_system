@@ -254,6 +254,25 @@ min_cut=999
 
 #### 2.4.1 수직방향(세로방향) 보정
 
+```
+    for i in range(len(list1)):
+        for j in range(i + 1, len(list1)):
+            x1,y1 = list1[i][1:]
+            x2,y2 = list1[j][1:]
+            x1, x2, y1, y2 = int(x1), int(x2), int(y1), int(y2)
+            if (x2 - x1) != 0:
+                angle_rad = (y2 - y1) / (x2 - x1)
+            else:
+                angle_rad = 0
+            angle_radians = math.atan(angle_rad)
+            angle_degrees = math.degrees(angle_radians)
+            if x1<div6*4 and x2<div6*4 and abs(x2 - x1) <13and abs(y2 - y1) <200:
+               if angle_degrees<-68 and angle_degrees>=-90:
+                   cv2.line(img3_2f, (x1, y1), (x2, y2), (0,255,0), 1,8)
+```
+수직방향으로 왜곡이 심한 왼쪽부분을 먼저 일정한 간격,각도를 정하여 하나의 직선으로 이어주었습니다.
+
+
 
 
 
