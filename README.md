@@ -137,7 +137,6 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
         img3_3_7 = img3_1[0:heigt_total, div6 * 6:div6 * 7]
 ```
 ![img3_1_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/75e3ff8a-a295-4d4d-a0d4-31f028f1e216)
-
 ->첫번째 이미지
 
 우선 전체 이미지를 일정한 너비로 끊어서 여러개의 이미지를 만들었고 첫번째 이미지부터 차례대로 보정을 진행하였습니다.
@@ -157,7 +156,12 @@ for a in range(len((contours3_1))):
         y_max3 = 0
 y_cut_1 = sorted(y_cut_1)
 ```
-첫번째 조각에서 cv2.findContours() 함수를 이용하여 같은 행으로 예측되는 부분들을 하나의 외곽선으로 인식하여 contours3_1에 정보를 저장하고 
+첫번째 조각에서 cv2.findContours() 함수를 이용하여 같은 행으로 예측되는 부분들을 하나의 외곽선으로 인식하여 그룹을지어 contours3_1에 정보를 저장하고 
+
+contours3_1에 저장된 정보 y값(contours3_1[a][b][0][1])으로 y기준 좌표들을 y_cut_1에 저장하였습니다.
+
+![y_cut_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/78d3e8aa-1fb7-432e-a95b-b6e88f1ef494)
+
 ```
 a = 0
 while a != len(y_cut_1):
@@ -176,6 +180,16 @@ for a in y_cut_1:
     cv2.line(img3_3_1, (0, a), (img3_3_1.shape[1], a), (255, 0, 0), 1)
 
 ```
-
+기준좌표(y_cut_1)를 통하여 같은 행에 존재하는 점자들을 정렬시켜 수평 방향으로의 정렬을 진행하였습니다.
 ![img3_1_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/93a1bb58-eb0e-4dbe-84f8-24981482baac)
+흰색->빨간색->파란색
+
+![img3_1_1,2](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/c3891913-e820-4fad-bb1c-c052064dfcc9)
+
+첫번째 과정과 마찬가지로 순차적으로 나머지 이미지들도 기준점들을 이용하여 보정을 진행하였습니다.
+
+
+
+
+
 
