@@ -118,7 +118,8 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
 
 ### 2.4 불균인한 영상 보정 
 
-이전 단계(2.3) 에서 얻은 img3_1은 이미지의 휘어짐과 왜곡이 존재하기 떄문에 일정 각도,길이 이내의 좌표들을 연결하보았습니다.
+#### 2.4.1 수평방향(가로방향) 보정
+이전 단계(2.3) 에서 얻은 img3_1은 이미지의 휘어짐과 왜곡이 존재하기 떄문에 일정 각도,길이 이내의 좌표들을 수평방향으로 연결하보았습니다.
 
 ![img3_1_line](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/2b8cceea-9bb0-4a37-ad95-ef984e22f9e8)
 
@@ -180,13 +181,79 @@ for a in y_cut_1:
     cv2.line(img3_3_1, (0, a), (img3_3_1.shape[1], a), (255, 0, 0), 1)
 
 ```
-기준좌표(y_cut_1)를 통하여 같은 행에 존재하는 점자들을 정렬시켜 수평 방향으로의 정렬을 진행하였습니다.
+잘려진 이미지같은 경우에는 점자가 3행모두 존재하지 않은 경우가 있기때문에 3개의 행을 만들어주었습니다.
+
 ![img3_1_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/93a1bb58-eb0e-4dbe-84f8-24981482baac)
 흰색->빨간색->파란색
 
-![img3_1_1,2](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/c3891913-e820-4fad-bb1c-c052064dfcc9)
+![수평기준2](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/ccdcacd5-421e-4797-ba07-a594e703ad74)
 
-첫번째 과정과 마찬가지로 순차적으로 나머지 이미지들도 기준점들을 이용하여 보정을 진행하였습니다.
+첫번째 과정과 마찬가지로 순차적으로 나머지 이미지들도 기준점들을 정해주었습니다.
+
+```
+min_y1 = 999
+num_y1=0
+    for i in range(len(list1)):
+        x, y = list1[i][1:]
+        x, y = int(x), int(y)
+        if x < div6:
+            for a in range(len(y_cut_1)):
+                if (y_cut_1[a] - y) > 0 and (y_cut_1[a] - y) < min_y1:
+                    min_y1 = y_cut_1[a] - y
+                    num_y1=a
+            list1[i][2]=y_cut_2[num_y1]
+ 
+```
+우선 왜곡이 심한  첫번쨰,두번째 이미지에서 점자가 저장된 list1에서 y값들을 기준좌표로 매핑 시켜주었습니다.
+
+```
+min_cut=999
+    for b in range(len(y_cut_3)):
+            if y_cut_3[b]<min_cut:
+                min_cut=y_cut_3[b]
+            if y_cut_4[b]<min_cut:
+                min_cut=y_cut_4[b]
+            if y_cut_5[b]<min_cut:
+                min_cut=y_cut_5[b]
+            if y_cut_6[b]<min_cut:
+                min_cut=y_cut_6[b]
+            if y_cut_7[b] < min_cut:
+                min_cut = y_cut_7[b] 
+            y_cut_3[b]=y_cut_4[b]=y_cut_5[b]=y_cut_6[b]=y_cut_7[b]=min_cut
+            min_cut = 999
+
+    for i in range(len(list1)):
+        x, y = list1[i][1:]
+        x, y = int(x), int(y)
+        # for a in range(2,6):
+        if x >= div6 * 2 and x < div6 * (7) :
+            y=find_closest_value(y_cut_3,y)
+            list1[i][2] = y
+```
+왜곡이 비교적 양호한 이미지들도 min_cut으로 매핑 시켜주고,
+
+```
+    for b in range(len(y_cut_3)):
+        min_cut=int((y_cut_3[b]+y_cut_2[b])/2)
+        y_cut_2[b]=y_cut_3[b]=y_cut_4[b]=y_cut_5[b]=y_cut_6[b]=y_cut_7[b]=min_cut
+        #min_cut = 999
+
+    for i in range(len(list1)):
+        x, y = list1[i][1:]
+        x, y = int(x), int(y)
+        y = find_closest_value(y_cut_3, y)
+        list1[i][2] = y
+```
+첫번째,두번째의 이미지와 나머지 이미지도 하나의 기준으로 통일시켜 전체이미지를 리매핑 시켜 주었습니다. 
+![수평기준4](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/029769dc-2cf2-44c7-96da-80d903879ae0)
+
+![image](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/c393cf70-aef2-4e5b-a3d9-d2bf9e83cb07)
+
+
+이로서 수평방향으로 보정을 진행하였습니다.
+
+#### 2.4.1 수직방향(세로방향) 보정
+
 
 
 
