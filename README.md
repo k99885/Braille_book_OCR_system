@@ -136,8 +136,11 @@ img3_2_3 또한 이전의 방법과 같이  리스트(list1)에 점자들의 좌
         img3_3_6 = img3_1[0:heigt_total, div6 * 5:div6 * 6]
         img3_3_7 = img3_1[0:heigt_total, div6 * 6:div6 * 7]
 ```
+![img3_1_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/75e3ff8a-a295-4d4d-a0d4-31f028f1e216)
 
-우선 이미지를 여러개의 조각으로 나눠주었고 첫번째 조각부터 차례대로 보정을 진행하였습니다.
+->첫번째 이미지
+
+우선 전체 이미지를 일정한 너비로 끊어서 여러개의 이미지를 만들었고 첫번째 이미지부터 차례대로 보정을 진행하였습니다.
 
 ```
 contours3_1, _ = cv2.findContours(img3_3_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -153,7 +156,9 @@ for a in range(len((contours3_1))):
         y_cut_1.append(y_max3 + 1)
         y_max3 = 0
 y_cut_1 = sorted(y_cut_1)
-
+```
+첫번째 조각에서 cv2.findContours() 함수를 이용하여 같은 행으로 예측되는 부분들을 하나의 외곽선으로 인식하여 contours3_1에 정보를 저장하고 
+```
 a = 0
 while a != len(y_cut_1):
     if y_cut_1[a + 1] - y_cut_1[a] < 28:
