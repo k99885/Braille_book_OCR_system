@@ -477,3 +477,19 @@ result = np.zeros((int(len(rholist_x) / 2), int(len(y_cut_3) / 3) + 1), np.uint8
 
 ## 3. 점자 데이터(10진수) 자연어로 변환
 
+
+2차원 리스트로 이루어진 result를 1차원 리스트인 result1[]으로 변경해주고 
+
+![result1](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/75728860-858c-4303-824a-3a1a677f6891)
+
+```
+import transe   
+result2 = transe.trans_data(result1)
+```
+ 
+trans_data함수를 사용하여 한글로 변환시켜주었습니다.
+
+![result2](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/a72e875d-de5e-47dc-97a1-4c9f9a732b78)
+
+- transe.py
+
