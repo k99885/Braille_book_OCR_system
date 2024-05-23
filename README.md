@@ -368,8 +368,112 @@ min_cut=999
 
 ### 2.4 점자 규격화
 
+```
+  rholist_x = []
+    result_rholist_x1 = []
+    for j in range(len(list_y2)):
+        for i in range(len(list_y2[j])):
+            x = list_y2[j][i]
+            y = y_cut_3[j]
+            cv2.rectangle(img4, (x, y), (x + 7, y + 7), (255, 255, 255), 1)
+            result_rholist_x1.append(x)
+    [rholist_x.append(x) for x in result_rholist_x1 if x not in rholist_x]
 
+    rholist_x = np.sort(rholist_x)
+```
+정렬이된 점자들을 2x3으로 규격화 하기위해서 기준좌표 리스트 rholist_x[] 을 만들어주고 점자들을 rectangle으로 시각화 하였습니다.
 
+```
+    for j in range(0, len(y_cut_3), 3):
+        for i in range(0, len(rholist_x), 2):
+            cv2.rectangle(img4, (rholist_x[i], y_cut_3[j]), (rholist_x[i + 1] + 8, y_cut_3[j + 2] + 8), (0, 255, 0),1)
+```
+기준점 리스트 y_cut_3,rholist_x을 이용하여 2x3으로 점자들을 규격화 하였습니다..
 
+![img4_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/0b04089f-a624-4863-b08d-a9209e95c965)
 
+### 2.5 이진부호로 변환
+```
+result = np.zeros((int(len(rholist_x) / 2), int(len(y_cut_3) / 3) + 1), np.uint8)
+    l, k, m, j = 0, 0, 0, 0
+    y = 1
+    for x in range(0, len(y_cut_3), 3):
+        for i in range(0, len(rholist_x), 2):
+            #######1행############################
+            if rholist_x[i] == list_y2[x][m]:
+                s1 = 1
+                if m < len(list_y2[x]) - 1:
+                    m += 1
+            else:
+                s1 = 0
+
+            if rholist_x[i + 1] == list_y2[x][m]:
+                s2 = 1
+                if m < len(list_y2[x]) - 1:
+                    m += 1
+            else:
+                s2 = 0
+            #######2행############################
+            if rholist_x[i] == list_y2[x + 1][k]:
+                s3 = 1
+                if k < len(list_y2[x + 1]) - 1:
+                    k += 1
+            else:
+                s3 = 0
+
+            if rholist_x[i + 1] == list_y2[x + 1][k]:
+                s4 = 1
+                if k < len(list_y2[x + 1]) - 1:
+                    k += 1
+            else:
+                s4 = 0
+            #######3행############################
+            if rholist_x[i] == list_y2[x + 2][l]:
+                s5 = 1
+                if l < len(list_y2[x + 2]) - 1:
+                    l += 1
+            else:
+                s5 = 0
+
+            if rholist_x[i + 1] == list_y2[x + 2][l]:
+                s6 = 1
+                if l < len(list_y2[x + 2]) - 1:
+                    l += 1
+            else:
+                s6 = 0
+
+            res1 = str(s1) + str(s2) + str(s3) + str(s4) + str(s5) + str(s6)
+            # print(res1)
+            res2 = int(res1, 2)
+            # result.append(res1)
+            result[j][y] = res2
+            result[j][0] = j
+            j += 1
+        l, k, m, j = 0, 0, 0, 0
+        y = y + 1
+```
+한줄에 2x3의 점자가 있으므로 rholist_x를 3행으로 나누어서 이진부호로 인식하고 10진수로 변환시켜 result[][]에 결과값을 저장하였습니다.
+
+![result](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/49b0d76a-fe93-41ae-8071-0062395f38e6)
+
+이진 변환을 열으로 진행하고 하나의 열이 변환완료 되었으면 다음 열으로 이동하는 방식으로 진행하여 사진과 같은 result[][]를 얻었습니다.
+
+```
+    for j in range(0, len(y_cut_3), 3):
+        for i in range(0, len(rholist_x), 2):
+            y = int(j / 3 + 1)
+            x = int(i / 2)
+            cv2.putText(img4, str(result[x][y]), (rholist_x[i], y_cut_3[j] + 50), cv2.FONT_HERSHEY_PLAIN, 1,
+                       (0, 0, 255))
+```
+
+10진수로 변환된 점자들을 해당하는 구역에 디스플레이 해주었습니다.
+
+![img4](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/edfccf09-a5e0-4260-9c8a-04519c3f3a27)
+
+영상 처리가 완료된 점자들을 보기좋게 새로 만들어주었습니다.
+
+![결과](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/abacfe66-b642-425a-ac5f-da434a02a615)
+
+## 3. 점자 데이터(10진수) 자연어로 변환
 
