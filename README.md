@@ -272,7 +272,101 @@ min_cut=999
 ```
 수직방향으로 왜곡이 심한 왼쪽부분을 먼저 일정한 간격,각도를 정하여 하나의 직선으로 이어주었습니다.
 
+![img3_2f](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/6dc6a931-caff-48d0-952b-3d2d99e26209)
 
+
+```
+    contours3, _ = cv2.findContours(img3_2f, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    y_max4 = 0
+    for a in range(len((contours3))):
+        for b in range(len(contours3[a])):
+            if contours3[a][b][0][0] > y_max4:
+                y_max4 = contours3[a][b][0][0]
+        for b in range(len(contours3[a])):
+            if img3_2s[contours3[a][b][0][1], contours3[a][b][0][0]]==255:
+                img3_2[contours3[a][b][0][1], y_max4]=255
+        y_max4 = 0
+```
+수직방향으로 이어진 부분들을 x좌표를 하나로 통일시켜 주었습니다.
+
+![수직방향 왜곡이 심한부분보정](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/0cf852fe-35e9-47a9-bab3-b6be4f024fc1)
+
+```
+    contours4, _ = cv2.findContours(img3_2, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_NONE)
+    list2 = np.zeros((len(contours4), 3), np.uint16)
+    print(len(contours4))
+    for i, cnt in enumerate(contours4):
+        x, y, width, height = cv2.boundingRect(cnt)
+        list2[i] = i, x, y
+```
+수직방향으로 왜곡이 심한부분을 보정해주었고 이것을 리스트화 하여 list2[]에 저장하였습니다.
+
+```
+    list_y = []
+    for i in range(len(y_cut_3)):
+        str1 = []
+        list_y.append(str1)
+
+    for j in range(len(y_cut_3)):
+        for i in range(len(list2)):
+            if list2[i][2] == y_cut_3[j]:
+                list_y[j].append(list2[i][1])
+
+    for j in range(len(y_cut_3)):
+        list_y[j] = np.sort(list_y[j])
+```
+이전에 과정을 통하여 수평방향으로는 정렬이 완벽하게 되었기때문에 list_y[]에 점자들의 y값 기준좌표 리스트를 생성하였습니다.
+
+```
+    for j in range(len(list_y) - 1):
+        for i in range(len(list_y[j])):
+            for x in range(len(list_y) - j):
+                if j < len(list_y) - x:
+                    for m in range(len(list_y[j + x])):
+                        if abs(int(list_y[j][i]) - int(list_y[j + x][m])) <6:
+                            #list_y[j][i] = list_y[j + x][m]
+                            cv2.line(img3_3s, (list_y[j][i], y_cut_3[j]), (list_y[j + x][m], y_cut_3[j + x]),(0,255,0), 1,8)
+```
+이전의 과정을 통하여 수직방향으로 왜곡이 심한부분은 보정하였지만 나머지 부븐을 보정하기위하여 일정한 간격을 설정하여 수직방향으로 연결 시켜주었습니다.
+
+![img3_3s](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/16ff2146-88bc-4a49-b022-6413864c2602)
+
+```
+    contours5, _ = cv2.findContours(img3_3s, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+    y_max4 = 0
+
+    for a in range(len((contours5))):
+        for b in range(len(contours5[a])):
+            if contours5[a][b][0][0] > y_max4:
+                y_max4 = contours5[a][b][0][0]
+        for b in range(len(contours5[a])):
+            if img3_3[contours5[a][b][0][1], contours5[a][b][0][0]]==255:
+                img3_4[contours5[a][b][0][1], y_max4]=255
+        y_max4 = 0
+```
+이전의 과정과 똑같이 하나의 x값들로 통일시켜 주었습니다.
+
+![img3_4_line](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/d5e60e94-46c5-4dbd-b220-6fc67a7e3063)
+
+```
+    list_y2 = []
+    for i in range(len(y_cut_3)):
+        str1 = []
+        list_y2.append(str1)
+
+    for j in range(len(y_cut_3)):
+        for i in range(len(list3)):
+            if list3[i][2] == y_cut_3[j]:
+                list_y2[j].append(list3[i][1])
+
+    for j in range(len(y_cut_3)):
+        list_y2[j] = np.sort(list_y2[j])
+```
+
+정렬완료된 좌표들을  list_y2[]에 저장하였습니다.
+
+### 2.4 점자 규격화
 
 
 
