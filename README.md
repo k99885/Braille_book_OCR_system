@@ -21,7 +21,7 @@
 
 ### 2.1 특징점 검출
 
-# 특징점 리스트화
+## 특징점 리스트화
 ```
 params = cv2.SimpleBlobDetector_Params()
 
