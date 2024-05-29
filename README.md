@@ -14,6 +14,7 @@
         - [2.5 점자 규격화](#25-점자-규격화)
         - [2.6 이진부호로 변환](#26-이진부호로-변환)
    - [3. 점자 데이터(10진수) 자연어로 변환](#3-점자-데이터10진수-자연어로-변환)
+   - [4. 자연어를 음성파일로 변환](#4-자연어-음성파일로-변환)
 
 ----------
 
@@ -505,7 +506,7 @@ trans_data함수를 사용하여 한글로 변환시켜주었습니다.
 
 ![result2](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/a72e875d-de5e-47dc-97a1-4c9f9a732b78)
 
- ### transe.py
+ ### - transe.py
 
 이전의 영상처리과정을 통해 자연어로 변환시킬 리스트를 얻었습니다.
 
@@ -548,7 +549,27 @@ hangul_char =chr(choseong * 588 + jungseong * 28 + jongseong + 44032)
 
 `chr(cho * 588 + joong * 28 + jong + 44032)` 으로 변환시켜 자연어로 변환시켰습니다.
 
+![result1](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/75728860-858c-4303-824a-3a1a677f6891)
+                                                    
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+                                                     
 ![점자-데이터레이블](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/94919291-f833-46e5-8ef1-9bb3d80eea5f)
+            
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                                                     
+ ![점자-데이터레이블-번역](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/3e401bff-bbb5-4344-b08d-defd6b293d0f)
+
+
+## 4. 자연어 음성파일로 변환
+
+```
+from gtts import gTTS
+tts = gTTS(text=text_representation, lang='ko', slow=False)
+tts.save("output.mp3")
+```
+
+google 의 text-to-speech를 사용하여 저장된 텍스트 text_representation를 output.mp3으로 변환하였습니다.
 
 
 
