@@ -551,12 +551,12 @@ hangul_char =chr(choseong * 588 + jungseong * 28 + jongseong + 44032)
 
 ![result1](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/75728860-858c-4303-824a-3a1a677f6891)
                                                     
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
                                                      
 ![점자-데이터레이블](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/94919291-f833-46e5-8ef1-9bb3d80eea5f)
             
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                                                      
  ![점자-데이터레이블-번역](https://github.com/k99885/Braille_book_recognition_program/assets/157681578/3e401bff-bbb5-4344-b08d-defd6b293d0f)
 
