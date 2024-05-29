@@ -381,7 +381,7 @@ min_cut=999
 
 정렬완료된 좌표들을  list_y2[]에 저장하였습니다.
 
-### 2.4 점자 규격화
+### 2.5 점자 규격화
 
 ```
   rholist_x = []
@@ -407,7 +407,7 @@ min_cut=999
 
 ![img4_1](https://github.com/k99885/Braille-book-recognition-program/assets/157681578/0b04089f-a624-4863-b08d-a9209e95c965)
 
-### 2.5 이진부호로 변환
+### 2.6 이진부호로 변환
 ```
 result = np.zeros((int(len(rholist_x) / 2), int(len(y_cut_3) / 3) + 1), np.uint8)
     l, k, m, j = 0, 0, 0, 0
