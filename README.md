@@ -1,9 +1,9 @@
-# Braille book recognition program
+# Braille book Optical Character Recognition system
 ## Overview
-시각 장애인들이 점자책을 이용하는데 겪는 불편함을 해결하기 위해, 점자책을 Optical Character Recognition(OCR) 기반의 영상처리 기술을 사용하여 인식하고 이를 음성파일로 변환시키는 알고리즘을 개발하였습니다.
+점자책을 시각 장애인들이 더 편리하게 이용할 수 있도록, 점자책을 인식하고 이를 음성 파일로 변환하는 점자 OCR 시스템을 개발하였습니다. 이 시스템은 다음과 같은 주요 기능을 포함합니다:
 
 - **영상처리 기술 개발**: OpenCV를 사용하여 점자책의 점자 인식을 위한 영상처리 알고리즘을 설계하고 구현
-- **OCR 기반 점자 인식**: OCR 기술을 사용하여 점자 문자를 인식하고 디지털 텍스트로 변환하는 알고리즘 개발
+- **OCR 기술**: 점자 인식을 위한 OCR(Optical Character Recognition) 기술을 개발하여 점자 텍스트를 디지털 텍스트로 변환
 - **음성 변환**: 인식된 점자 텍스트를 음성 파일로 변환하는 기능 구현
 
 ## 사용 기술
