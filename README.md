@@ -1,4 +1,6 @@
 # Braille book Optical Character Recognition system
+![ezgif com-animated-gif-maker](https://github.com/user-attachments/assets/4a55473c-01d9-41f3-953a-1784b57a53d6)
+
 ## Overview
 점자책을 시각 장애인들이 더 편리하게 이용할 수 있도록, 점자책을 인식하고 이를 음성 파일로 변환하는 점자 OCR 시스템을 개발하였습니다. 이 시스템은 다음과 같은 주요 기능을 포함합니다
 
@@ -11,6 +13,7 @@
 - **프로그래밍 언어**: Python
 - **영상처리 라이브러리**: OpenCV
 - **음성 변환 도구**: gTTS(Google Text-to-Speech)
+
 
 ## Table of contents
    - [1. 영상 취득](#1-영상-취득)
